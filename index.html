@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>食事タイミング＆運動パフォーマンス最適化プランナー</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-blue-50 min-h-screen">
+<div class="max-w-4xl mx-auto p-4">
+  <h1 class="text-2xl font-bold text-gray-800 mb-1">食事タイミング＆運動最適化プランナー</h1>
+  <p class="text-gray-500 text-sm mb-5">食事時刻・内容と運動種別から最適な運動タイミングを提案します。</p>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+    <div class="bg-white rounded-xl shadow p-4">
+      <h2 class="font-semibold text-gray-700 mb-3">食事入力</h2>
+      <div class="space-y-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">食事時刻</label>
+          <input id="mealTime" type="time" value="12:00" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400" aria-label="食事時刻">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">食事内容</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="cursor-pointer">
+              <input type="radio" name="mealType" value="carb" class="sr-only peer" checked>
+              <div class="border-2 rounded-lg p-2 text-center text-xs peer-checked:border-green-500 peer-checked:bg-green-50 hover:bg-gray-50">
+                <div class="text-xl mb-1">🍚</div>炭水化物多め
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="mealType" value="balanced" class="sr-only peer">
+              <div class="border-2 rounded-lg p-2 text-center text-xs peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-50">
+                <div class="text-xl mb-1">🍱</div>バランス
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="mealType" value="protein" class="sr-only peer">
+              <div class="border-2 rounded-lg p-2 text-center text-xs peer-checked:border-orange-500 peer-checked:bg-orange-50 hover:bg-gray-50">
+                <div class="text-xl mb-1">🥩</div>たんぱく質多め
+              </div>
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">食事量</label>
+          <select id="mealSize" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400" aria-label="食事量">
+            <option value="small">軽め（腹5分目以下）</option>
+            <option value="medium" selected>普通（腹7分目）</option>
+            <option value="large">多め（腹10分目）</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">運動種別</label>
+          <div class="grid grid-cols-2 gap-2">
+            <label class="cursor-pointer">
+              <input type="radio" name="workoutType" value="cardio" class="sr-only peer" checked>
+              <div class="border-2 rounded-lg p-2 text-center text-xs peer-checked:border-blue-500 peer-checked:bg-blue-50 hover:bg-gray-50">
+                <div class="text-xl mb-1">🏃</div>有酸素運動
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="workoutType" value="strength" class="sr-only peer">
+              <div class="border-2 rounded-lg p-2 text-center text-xs peer-checked:border-red-500 peer-checked:bg-red-50 hover:bg-gray-50">
+                <div class="text-xl mb-1">🏋️</div>無酸素（筋トレ）
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="workoutType" value="hiit" class="sr-only peer">
+              <div class="border-2 rounded-lg p-2 text-center text-xs peer-checked:border-orange-500 peer-checked:bg-orange-50 hover:bg-gray-50">
+                <div class="text-xl mb-1">⚡</div>HIIT
+              </div>
+            </label>
+            <label class="cursor-pointer">
+              <input type="radio" name="workoutType" value="yoga" class="sr-only peer">
+              <div class="border-2 rounded-lg p-2 text-center text-xs peer-checked:border-purple-500 peer-checked:bg-purple-50 hover:bg-gray-50">
+                <div class="text-xl mb-1">🧘</div>ヨガ・柔軟
+              </div>
+            </label>
+          </div>
+        </div>
+        <button id="calcBtn" class="w-full bg-green-600 text-white py-2.5 rounded-lg font-semibold hover:bg-green-700 mt-2" aria-label="最適タイミングを計算">最適タイミングを計算</button>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-4 flex flex-col">
+      <h2 class="font-semibold text-gray-700 mb-3">提案結果</h2>
+      <div id="result" class="flex-1 flex items-center justify-center text-gray-400 text-sm">「計算」ボタンを押してください</div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl shadow p-4">
+    <h2 class="font-semibold text-gray-700 mb-3">1日スケジュールプランナー</h2>
+    <div id="planner">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+        <div>
+          <label class="block text-xs text-gray-600 mb-1">朝食</label>
+          <input id="breakfast" type="time" value="07:00" class="w-full border rounded-lg px-3 py-1.5 text-sm" aria-label="朝食時刻">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-600 mb-1">昼食</label>
+          <input id="lunch" type="time" value="12:00" class="w-full border rounded-lg px-3 py-1.5 text-sm" aria-label="昼食時刻">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-600 mb-1">夕食</label>
+          <input id="dinner" type="time" value="19:00" class="w-full border rounded-lg px-3 py-1.5 text-sm" aria-label="夕食時刻">
+        </div>
+      </div>
+      <button id="planBtn" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 text-sm" aria-label="1日プランを最適化">1日プランを最適化</button>
+      <div id="planResult" class="mt-4"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const RULES = {
+  cardio:   { carb:{ small:1.0, medium:1.5, large:2.0 }, balanced:{ small:1.5, medium:2.0, large:2.5 }, protein:{ small:1.5, medium:2.0, large:2.5 }, advice:'消化物の胃内停滞が少なくなる食後1.5〜2時間が目安。軽いジョギング程度であれば食後1時間でも可。', benefit:'脂肪燃焼効率・心肺機能向上' },
+  strength: { carb:{ small:0.5, medium:1.0, large:1.5 }, balanced:{ small:1.0, medium:1.5, large:2.0 }, protein:{ small:1.0, medium:1.5, large:2.0 }, advice:'筋トレは食後1〜2時間が理想。炭水化物でグリコーゲンを補充済みの状態がベスト。運動後30分以内にたんぱく質補給を推奨。', benefit:'筋肥大・代謝向上' },
+  hiit:     { carb:{ small:1.5, medium:2.0, large:2.5 }, balanced:{ small:1.5, medium:2.5, large:3.0 }, protein:{ small:1.5, medium:2.0, large:2.5 }, advice:'HIITは強度が高く消化管への負担が大きいため食後2〜3時間が安全。空腹時は低血糖リスクあり。', benefit:'代謝向上・脂肪燃焼・心肺機能' },
+  yoga:     { carb:{ small:0.5, medium:1.0, large:1.5 }, balanced:{ small:0.5, medium:1.0, large:1.5 }, protein:{ small:0.5, medium:1.0, large:1.5 }, advice:'ヨガ・柔軟は比較的軽度なため食後30分〜1時間でも可能。深いポーズは空腹または食後1時間以上推奨。', benefit:'柔軟性・リカバリー・ストレス軽減' }
+};
+
+function timeToMin(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function minToTime(m) {
+  const h = Math.floor(m / 60) % 24;
+  const min = m % 60;
+  return `${String(h).padStart(2,'0')}:${String(min).padStart(2,'0')}`;
+}
+
+function vasColor(hours) {
+  if (hours <= 1) return 'text-red-600';
+  if (hours <= 1.5) return 'text-orange-500';
+  if (hours <= 3) return 'text-green-600';
+  return 'text-blue-600';
+}
+
+document.getElementById('calcBtn').addEventListener('click', () => {
+  const mealTime = document.getElementById('mealTime').value;
+  const mealType = document.querySelector('input[name="mealType"]:checked').value;
+  const mealSize = document.getElementById('mealSize').value;
+  const workoutType = document.querySelector('input[name="workoutType"]:checked').value;
+
+  const rule = RULES[workoutType];
+  const waitHours = rule[mealType][mealSize];
+  const mealMin = timeToMin(mealTime);
+  const workoutMin = mealMin + waitHours * 60;
+  const workoutTime = minToTime(workoutMin);
+  const optEnd = minToTime(workoutMin + 30 * 60);
+
+  const workoutNames = { cardio:'有酸素運動', strength:'筋トレ（無酸素）', hiit:'HIIT', yoga:'ヨガ・柔軟' };
+  const mealNames = { carb:'炭水化物多め', balanced:'バランス', protein:'たんぱく質多め' };
+  const sizeNames = { small:'軽め', medium:'普通', large:'多め' };
+
+  const html = `
+    <div class="space-y-3">
+      <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+        <p class="text-sm text-gray-600 mb-1">推奨運動開始時間</p>
+        <p class="text-4xl font-bold text-green-700">${workoutTime}</p>
+        <p class="text-sm text-gray-500 mt-1">食後 <span class="font-semibold">${waitHours}時間</span> 後</p>
+        <p class="text-xs text-gray-400">（最適ウィンドウ: ${workoutTime}〜${optEnd}）</p>
+      </div>
+      <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+        <p class="text-xs font-semibold text-blue-700 mb-1">根拠・アドバイス</p>
+        <p class="text-xs text-gray-700">${rule.advice}</p>
+      </div>
+      <div class="grid grid-cols-2 gap-2 text-xs text-gray-600">
+        <div class="bg-gray-50 rounded p-2"><span class="font-semibold">食事:</span> ${mealNames[mealType]}（${sizeNames[mealSize]}）</div>
+        <div class="bg-gray-50 rounded p-2"><span class="font-semibold">運動:</span> ${workoutNames[workoutType]}</div>
+        <div class="bg-gray-50 rounded p-2 col-span-2"><span class="font-semibold">期待効果:</span> ${rule.benefit}</div>
+      </div>
+    </div>`;
+  document.getElementById('result').innerHTML = html;
+  savePref();
+});
+
+document.getElementById('planBtn').addEventListener('click', () => {
+  const meals = [
+    { name:'朝食', time:document.getElementById('breakfast').value },
+    { name:'昼食', time:document.getElementById('lunch').value },
+    { name:'夕食', time:document.getElementById('dinner').value }
+  ].sort((a,b) => timeToMin(a.time) - timeToMin(b.time));
+
+  const workoutType = document.querySelector('input[name="workoutType"]:checked').value;
+  const rule = RULES[workoutType];
+  const workoutNames = { cardio:'有酸素運動', strength:'筋トレ', hiit:'HIIT', yoga:'ヨガ・柔軟' };
+
+  const slots = meals.map(m => {
+    const wait = rule.balanced.medium;
+    const start = minToTime(timeToMin(m.time) + wait * 60);
+    const end = minToTime(timeToMin(m.time) + (wait + 1) * 60);
+    return { meal:m.name, mealTime:m.time, start, end, wait };
+  });
+
+  const timeline = [...meals.map(m => ({ type:'meal', label:m.name, time:m.time })),
+    ...slots.map(s => ({ type:'workout', label:`${workoutNames[workoutType]}推奨`, time:s.start, end:s.end }))
+  ].sort((a,b) => timeToMin(a.time) - timeToMin(b.time));
+
+  let html = '<div class="space-y-2">';
+  timeline.forEach(e => {
+    const color = e.type === 'meal' ? 'bg-orange-100 border-orange-300' : 'bg-blue-100 border-blue-300';
+    const icon = e.type === 'meal' ? '🍽️' : '💪';
+    html += `<div class="flex items-center gap-3 p-2 rounded-lg border ${color}">
+      <span class="text-sm font-mono font-semibold text-gray-700 w-14">${e.time}</span>
+      <span class="text-base">${icon}</span>
+      <span class="text-sm text-gray-800">${e.label}${e.end ? `〜${e.end}` : ''}</span>
+    </div>`;
+  });
+  html += '</div>';
+  document.getElementById('planResult').innerHTML = html;
+});
+
+const PKEY = 'meal_workout_pref';
+function savePref() {
+  localStorage.setItem(PKEY, JSON.stringify({
+    mealTime: document.getElementById('mealTime').value,
+    mealType: document.querySelector('input[name="mealType"]:checked')?.value,
+    mealSize: document.getElementById('mealSize').value,
+    workoutType: document.querySelector('input[name="workoutType"]:checked')?.value
+  }));
+}
+
+function loadPref() {
+  try {
+    const d = JSON.parse(localStorage.getItem(PKEY));
+    if (!d) return;
+    if (d.mealTime) document.getElementById('mealTime').value = d.mealTime;
+    if (d.mealType) { const r = document.querySelector(`input[name="mealType"][value="${d.mealType}"]`); if (r) r.checked = true; }
+    if (d.mealSize) document.getElementById('mealSize').value = d.mealSize;
+    if (d.workoutType) { const r = document.querySelector(`input[name="workoutType"][value="${d.workoutType}"]`); if (r) r.checked = true; }
+  } catch {}
+}
+
+loadPref();
+</script>
+</body>
+</html>
